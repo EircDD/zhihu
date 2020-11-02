@@ -10,11 +10,12 @@ import javafx.stage.Stage;
 
 
 public class WindowAlert {
+
     public static boolean answer;
 
     /**
      * @param title 标题
-     * @param msg   消息
+     * @param msg 消息
      */
     public static boolean display(String title, String msg) {
         // 创建舞台
@@ -25,15 +26,9 @@ public class WindowAlert {
         stage.setTitle(title);
 
         // 创建控件
-        Button buttonYes = new Button("是");
+        Button buttonYes = new Button("确定");
         buttonYes.setOnMouseClicked(event -> {
             answer = true;
-            stage.close();
-        });
-
-        Button buttonNo = new Button("否");
-        buttonNo.setOnMouseClicked(event -> {
-            answer = false;
             stage.close();
         });
 
@@ -41,7 +36,7 @@ public class WindowAlert {
 
         // 创建布局
         VBox vBox = new VBox();
-        vBox.getChildren().addAll(label, buttonYes, buttonNo);
+        vBox.getChildren().addAll(label, buttonYes);
         vBox.setAlignment(Pos.CENTER); // 布局居中显示
 
         // 创建场景

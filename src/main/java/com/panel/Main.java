@@ -43,7 +43,10 @@ public class Main extends Application {
                 WindowAlert.display("警告", "链接不能为空");
                 return;
             }
-            ZhihuUtils.saveArticle(seltPath.getText(), articleEdt.getText());
+            ZhihuUtils.saveArticle(seltPath.getText(), articleEdt.getText(),
+                (saveName, saveSuccess) -> {
+                    WindowAlert.display("提示", saveName);
+                });
         });
 
         EditText collectionEdt = new EditText("请输入收藏链接Id");
@@ -55,7 +58,7 @@ public class Main extends Application {
                 return;
             }
             System.out.println("获取收藏id:" + collectionBtn.getText());
-            ZhihuUtils.saveArticle(collectionBtn.getText(), collectionEdt.getText());
+            ZhihuUtils.saveCollect(seltPath.getText(), collectionEdt.getText());
         });
         GridLayout gridLayout = new GridLayout(3, 2);
         gridLayout

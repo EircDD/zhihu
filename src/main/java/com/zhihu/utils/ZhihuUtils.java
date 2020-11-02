@@ -3,8 +3,8 @@ package com.zhihu.utils;
 import com.google.gson.Gson;
 import com.zhihu.other.BaseUrl;
 import com.zhihu.other.CollectionEnt;
-import com.zhihu.other.CommUtils;
 import com.zhihu.other.CollectionEnt.DataBean;
+import com.zhihu.other.CommUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.Callback;
 import java.io.File;
@@ -28,7 +28,7 @@ public class ZhihuUtils {
      * @param filePath 保存路径
      * @param articleUrl 文章url
      */
-    public static void saveArticle(String filePath, String articleUrl) {
+    public static void saveArticle(String filePath, String articleUrl, SaveCallback saveCallback) {
         if (!articleUrl.startsWith("http") || !articleUrl.startsWith("wwww.")) {
             articleUrl = CommUtils.getUrl(articleUrl);
         }
@@ -78,6 +78,7 @@ public class ZhihuUtils {
                 if (saveSuccess) {
                     System.out.println("保存成功");
                 }
+                saveCallback.callback("保存" + htmlTitle + (saveSuccess ? "成功" : "失败"), saveSuccess);
             }
         });
     }
@@ -146,4 +147,10 @@ public class ZhihuUtils {
             }
         });
     }
+
+    public interface SaveCallback {
+
+        void callback(String saveName, boolean saveSuccess);
+    }
+
 }
