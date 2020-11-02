@@ -79,6 +79,26 @@ public class CommUtils {
     }
 
     /**
+     * @param html html文本
+     * @return 调整后的html
+     */
+    public static String removeOther(String html) {
+        Document doc = Jsoup.parse(html);
+        //1.增加标题
+        String title = doc.selectFirst("h1").text();
+        if (StringUtils.isBlank(title)) {
+            title = doc.selectFirst("H1").text();
+        }
+        System.out.println("获取到的数据title:" + title);
+        doc.title(title);
+        doc.select("div[class=Question-mainColumn]").append(title);
+        //2.去除标题空格
+        doc.select("div[class=QuestionHeader]").remove();
+        //3.
+        return doc.toString();
+    }
+
+    /**
      * 参数1 regex:我们的正则字符串 参数2 就是一大段文本，这里用data表示
      */
     private static String filterSpecialStr(String regex, String data) {

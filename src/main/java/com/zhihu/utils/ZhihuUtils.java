@@ -44,12 +44,13 @@ public class ZhihuUtils {
                 + DateUtil.getTimeStamp();
             //2.去除循环请求
             String html = CommUtils.removeLoopRequest(response);
+            html = CommUtils.removeOther(html);
             //3.解决图片不显示问题
-            String htmlPic = CommUtils.replaceHtmlPicSrc(html);
+            html = CommUtils.replaceHtmlPicSrc(html);
             //4.格式化html输出
-            String htmlContent = CommUtils.formatHtml(htmlPic);
+            html = CommUtils.formatHtml(html);
             saveSuccess = FileUtils.writeFile(
-                filePath + File.separator + htmlTitle + ".html", htmlContent);
+                filePath + File.separator + htmlTitle + ".html", html);
             if (saveSuccess) {
                 System.out.println("保存成功");
             }
