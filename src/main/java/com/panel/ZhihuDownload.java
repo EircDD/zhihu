@@ -16,7 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 //  -场景       Scene
 //    -布局     stackPane
 //      -控件   Button
-public class Main extends Application {
+public class ZhihuDownload extends Application {
 
     private Stage stage;
 

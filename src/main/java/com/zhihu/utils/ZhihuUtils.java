@@ -8,6 +8,7 @@ import com.zhihu.other.CommUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.Callback;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import okhttp3.Call;
 import okhttp3.Response;
@@ -33,54 +34,30 @@ public class ZhihuUtils {
             articleUrl = CommUtils.getUrl(articleUrl);
         }
         FileUtils.makeDirs(filePath);
-        OkHttpUtils.get().url(articleUrl).tag(okhttpTag)
-            .build().execute(new Callback<String>() {
-            @Override
-            public String parseNetworkResponse(Response response, int i) throws Exception {
-                //收藏
-                if (response.body() != null) {
-                    return response.body().string();
-                }
-                return null;
+        boolean saveSuccess = false;
+        String htmlTitle = "";
+        try {
+            String response = OkHttpUtils.get().url(articleUrl).tag(okhttpTag)
+                .build().execute().body().string();
+            //1.获取标题
+            htmlTitle = FileUtils.getConversionFileName(CommUtils.getHtmlTitle(response))
+                + DateUtil.getTimeStamp();
+            //2.去除循环请求
+            String html = CommUtils.removeLoopRequest(response);
+            //3.解决图片不显示问题
+            String htmlPic = CommUtils.replaceHtmlPicSrc(html);
+            //4.格式化html输出
+            String htmlContent = CommUtils.formatHtml(htmlPic);
+            saveSuccess = FileUtils.writeFile(
+                filePath + File.separator + htmlTitle + ".html", htmlContent);
+            if (saveSuccess) {
+                System.out.println("保存成功");
             }
 
-            @Override
-            public void onError(Call call, Exception e, int i) {
-                e.printStackTrace();
-                call.cancel();
-//                XLog.file("异常了" + e.getMessage());
-            }
-
-            @Override
-            public void onResponse(String response, int i) {
-                //如果不是结尾页面就进行循环请求
-                if (StringUtils.isBlank(response)) {
-                    XLog.showLogArgs("请求数据为空,请重试!!!");
-                    return;
-                }
-                //1.获取标题
-                String htmlTitle = FileUtils.getConversionFileName(CommUtils.getHtmlTitle(response))
-                    + DateUtil.getTimeStamp();
-
-                //2.去除循环请求
-                String html = CommUtils.removeLoopRequest(response);
-                //3.解决图片不显示问题
-                String htmlPic = CommUtils.replaceHtmlPicSrc(html);
-                //4.格式化html输出
-                String htmlContent = CommUtils.formatHtml(htmlPic);
-//                <img src="https://pic3.zhimg.com/v2-e23b114260047a464ce0c8a4c6da9662_b.jpg"
-//                data-caption="" data-size="normal" data-rawwidth="545" data-rawheight="869"
-//                class="origin_image zh-lightbox-thumb" width="545"
-//                data-original="https://pic3.zhimg.com/v2-e23b114260047a464ce0c8a4c6da9662_r.jpg">
-//                XLog.showLogArgs(htmlContent);
-                boolean saveSuccess = FileUtils.writeFile(
-                    filePath + File.separator + htmlTitle + ".html", htmlContent);
-                if (saveSuccess) {
-                    System.out.println("保存成功");
-                }
-                saveCallback.callback("保存" + htmlTitle + (saveSuccess ? "成功" : "失败"), saveSuccess);
-            }
-        });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        saveCallback.callback("保存" + (saveSuccess ? "成功" : "失败"), saveSuccess);
     }
 
     /**

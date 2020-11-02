@@ -38,15 +38,12 @@ public class WindowAlert {
         VBox vBox = new VBox();
         vBox.getChildren().addAll(label, buttonYes);
         vBox.setAlignment(Pos.CENTER); // 布局居中显示
-
         // 创建场景
-        Scene scene = new Scene(vBox, 200, 200);
-
+        Scene scene = new Scene(vBox, 100, 100);
         // 显示舞台
         stage.setScene(scene);
 //        stage.show();
         stage.showAndWait();  // 等待窗体关闭才继续
-
         // 窗体返回值
         return answer;
     }
