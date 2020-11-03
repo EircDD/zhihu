@@ -16,6 +16,7 @@ public class XLog {
      * log输出到本地文件开关
      */
     private static boolean offset = false;
+    private static int stepNumber = 0;
 
     public static void showLogArgs(Object... args) {
         System.out.println(new Throwable().getStackTrace()[1]);
@@ -47,8 +48,7 @@ public class XLog {
     }
 
     public static void showLogInfo(String msg) {
-        String commonMsg = new Throwable().getStackTrace()[1] + "\n详情:   " + msg + "";
-        System.out.println("调用位置: " + commonMsg);
+        System.out.println("调用位置: " + new Throwable().getStackTrace()[1] + "\n详情:   " + msg + "");
         if (!offset) {
             return;
         }
@@ -98,7 +98,6 @@ public class XLog {
         }
     }
 
-
     public static String getStackTraceString(Throwable tr) {
         if (tr == null) {
             return "";
@@ -123,4 +122,17 @@ public class XLog {
         System.out.println(getStackTraceString(e));
     }
 
+    public static void showStepLogInfo() {
+        System.out.println(new Throwable().getStackTrace()[1] + "  步骤" + stepNumber++);
+    }
+
+    public static void getChild(String... args) {
+        System.out.println(new Throwable().getStackTrace()[2]);
+        if (args.length != 0) {
+            for (int i = 0; i < args.length; i++) {
+                System.out.println("参数 " + i + " = [" + args[i] + "]");
+                file(args[i], "普通信息.txt");
+            }
+        }
+    }
 }
