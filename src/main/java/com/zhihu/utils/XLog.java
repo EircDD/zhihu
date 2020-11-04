@@ -127,8 +127,10 @@ public class XLog {
     }
 
     public static void getChild(String... args) {
-        System.out.println(new Throwable().getStackTrace()[2]);
-        if (args.length != 0) {
+        if (args.length == 1) {
+            System.out.println(new Throwable().getStackTrace()[2] + args[0]);
+        } else if (args.length > 1) {
+            System.out.println(new Throwable().getStackTrace()[2]);
             for (int i = 0; i < args.length; i++) {
                 System.out.println("参数 " + i + " = [" + args[i] + "]");
                 file(args[i], "普通信息.txt");

@@ -6,13 +6,13 @@ public class Main {
 
     public static void main(String[] args) {
         // TODO Auto-generated method stub
-        m1();
-//        m2();
+//        m1();
+        m2();
     }
 
     private static void m2() {
-        ZhihuUtils.saveArticle("D:/test/", "有什么你想匿名说出的秘密？ - 知乎\n"
-                + "https://www.zhihu.com/question/375882427/answer/1545417627",
+        ZhihuUtils.saveArticle("F:\\知乎\\文档", "营销策划的大咖们每天会浏览哪些网站？ - 詹伟平的回答 - 知乎\n"
+                + "https://www.zhihu.com/question/36457936/answer/1441316644",
             (saveName, saveSuccess) -> {
 //                WindowAlert.display("提示", saveName);
             });

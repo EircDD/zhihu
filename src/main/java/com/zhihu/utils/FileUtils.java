@@ -2,6 +2,7 @@ package com.zhihu.utils;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.CharArrayWriter;
 import java.io.Closeable;
 import java.io.File;
@@ -15,9 +16,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import javax.swing.filechooser.FileSystemView;
@@ -284,10 +287,12 @@ public class FileUtils {
         if (isEmpty(content)) {
             return false;
         }
-        FileWriter fileWriter = null;
+        BufferedWriter fileWriter = null;
         try {
             makeDirs(filePath);
-            fileWriter = new FileWriter(filePath, append);
+            fileWriter = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(filePath, append),
+                    StandardCharsets.UTF_8));
             fileWriter.write(content);
             return true;
         } catch (IOException e) {
@@ -1021,6 +1026,13 @@ public class FileUtils {
     }
 
     /**
+     * 获取桌面路径
+     */
+    public static String getDesktopPath() {
+        return FileSystemView.getFileSystemView().getHomeDirectory().getPath() + File.separator;
+    }
+
+    /**
      * 方法二:按行获取指定内容(至末尾)
      *
      * @param startLine 起始行
@@ -1039,13 +1051,6 @@ public class FileUtils {
             buff = lnr.readLine();
         }
         return sb.toString();
-    }
-
-    /**
-     * 获取桌面路径
-     */
-    public static String getDesktopPath() {
-        return FileSystemView.getFileSystemView().getHomeDirectory().getPath() + File.separator;
     }
 
 
