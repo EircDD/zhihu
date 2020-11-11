@@ -13,6 +13,7 @@ import java.util.List;
 import okhttp3.Call;
 import okhttp3.Response;
 import org.apache.commons.lang3.StringUtils;
+import org.jsoup.helper.StringUtil;
 
 public class ZhihuUtils {
 
@@ -30,6 +31,10 @@ public class ZhihuUtils {
      * @param articleUrl 文章url
      */
     public static void saveArticle(String filePath, String articleUrl, SaveCallback saveCallback) {
+        if (StringUtil.isBlank(articleUrl)) {
+            System.out.println("链接不能为空");
+            return;
+        }
         if (!articleUrl.startsWith("http") || !articleUrl.startsWith("wwww.")) {
             articleUrl = CommUtils.getUrl(articleUrl);
         }

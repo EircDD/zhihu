@@ -294,6 +294,7 @@ public class FileUtils {
                 new OutputStreamWriter(new FileOutputStream(filePath, append),
                     StandardCharsets.UTF_8));
             fileWriter.write(content);
+            fileWriter.flush();
             return true;
         } catch (IOException e) {
             throw new RuntimeException("IOException occurred. ", e);
