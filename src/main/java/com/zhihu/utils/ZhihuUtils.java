@@ -37,6 +37,9 @@ public class ZhihuUtils {
         }
         if (!articleUrl.startsWith("http") || !articleUrl.startsWith("wwww.")) {
             articleUrl = CommUtils.getUrl(articleUrl);
+            if (!articleUrl.startsWith("http") || !articleUrl.startsWith("wwww.")) {
+                throw new RuntimeException("文章链接错误,请检查链接是否正确: " + articleUrl);
+            }
         }
         FileUtils.makeDirs(filePath);
         boolean saveSuccess = false;
