@@ -21,8 +21,14 @@ import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.filechooser.FileSystemView;
 
 /**
@@ -1014,7 +1020,8 @@ public class FileUtils {
     }
 
     /**
-     * windows下文件名中不能含有：\ / : * ? " < > | 英文的这些字符 ，这里使用"."、"'"进行替换。
+     * windows下文件名中不能含有：\ / : * ? " < > | 英文的这些字符 ，这里使用"."、"'"进行替换。 解决:保存文件文件名不正确问题
+     * 解决:文件名、目录名或卷标语法不正确。
      *
      * \/:?| 用.替换
      *
@@ -1031,6 +1038,41 @@ public class FileUtils {
      */
     public static String getDesktopPath() {
         return FileSystemView.getFileSystemView().getHomeDirectory().getPath() + File.separator;
+    }
+
+    /**
+     * @param filePath 文件路径
+     * @param pattern 日期格式
+     * @return 创建日期
+     */
+    public static String getFileCreatDate(String filePath, String pattern) {
+        BasicFileAttributes attrs;
+        try {
+            attrs = Files.readAttributes(Paths.get(filePath), BasicFileAttributes.class);
+            FileTime time = attrs.creationTime();
+            if (pattern == null) {
+                pattern = "yyyy-MM-dd HH:mm:ss";
+            }
+//            System.out.println("文件创建日期和时间是: " + new SimpleDateFormat(pattern).format(new Date(time.toMillis())));
+            return new SimpleDateFormat(pattern).format(new Date(time.toMillis()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    /**
+     * @param filePath 文件路径
+     * @param pattern 日期格式
+     * @return 文件修改日期
+     */
+    public static String getFileModifyDate(String filePath, String pattern) {
+        File f = new File(filePath);
+        long time = f.lastModified();
+        if (pattern == null) {
+            pattern = "yyyy-MM-dd HH:mm:ss";
+        }
+        return new SimpleDateFormat(pattern).format(new Date(time));
     }
 
     /**

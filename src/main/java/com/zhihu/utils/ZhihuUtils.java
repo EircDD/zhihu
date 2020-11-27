@@ -1,6 +1,8 @@
 package com.zhihu.utils;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
+import com.other.Constant;
 import com.zhihu.other.BaseUrl;
 import com.zhihu.other.CollectionEnt;
 import com.zhihu.other.CollectionEnt.DataBean;
@@ -13,16 +15,10 @@ import java.util.List;
 import okhttp3.Call;
 import okhttp3.Response;
 import org.apache.commons.lang3.StringUtils;
-import org.jsoup.helper.StringUtil;
 
 public class ZhihuUtils {
 
     private static String okhttpTag = "zhihuTag";
-
-    public static void main(String[] args) {
-        // TODO Auto-generated method stub
-    }
-
 
     /**
      * 保存知乎文章到本地
@@ -64,7 +60,7 @@ public class ZhihuUtils {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            XLog.printExceptionInfo(e);
         }
         saveCallback.callback("保存" + (saveSuccess ? "成功" : "失败"), saveSuccess);
     }
@@ -96,7 +92,7 @@ public class ZhihuUtils {
 
             @Override
             public void onError(Call call, Exception e, int i) {
-                e.printStackTrace();
+                XLog.printExceptionInfo(e);
                 call.cancel();
                 XLog.file("异常了" + e.getMessage());
             }
@@ -132,6 +128,44 @@ public class ZhihuUtils {
                 saveCollect(filePath, collectionEnt.getPaging().getNext());
             }
         });
+    }
+
+
+    /**
+     * 保存私有信息
+     */
+    public static String getPrivateInfo(String key, String defVal) {
+        if (!FileUtils.isFileExist(Constant.CONFIG_FILE_PATH)) {
+            FileUtils.writeFile(Constant.CONFIG_FILE_PATH, "{}");
+            return defVal;
+        }
+        String text = FileUtils.readFile(Constant.CONFIG_FILE_PATH, "utf-8");
+        if (StringUtil.isBlank(text)) {
+            return defVal;
+        }
+        JSONObject jsonObject = JSONObject.parseObject(text);
+        return jsonObject.getString(key);
+    }
+
+    /**
+     * 获取私有信息
+     */
+    public static void setPrivateInfo(String key, String value) {
+        try {
+            JSONObject privateInfo;
+            if (FileUtils.isFileExist(Constant.CONFIG_FILE_PATH)) {
+                privateInfo = JSONObject
+                    .parseObject(FileUtils.readFile(Constant.CONFIG_FILE_PATH, "utf-8"));
+            } else {
+                FileUtils.writeFile(Constant.CONFIG_FILE_PATH, "{}");
+                privateInfo = new JSONObject();
+            }
+            privateInfo.put(key, value);
+            FileUtils.writeFile(Constant.CONFIG_FILE_PATH, privateInfo.toJSONString());
+        } catch (Exception e) {
+            XLog.printExceptionInfo(e);
+            FileUtils.deleteFile(Constant.CONFIG_FILE_PATH);
+        }
     }
 
     public interface SaveCallback {
