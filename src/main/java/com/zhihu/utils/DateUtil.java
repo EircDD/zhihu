@@ -87,6 +87,22 @@ public class DateUtil {
         return calendar;
     }
 
+    /**
+     * @param seconds 时间字符串(例如:1600421227)
+     * @param format 格式
+     * @return 转换后的格式
+     */
+    public static String timeStamp2Date(String seconds, String format) {
+        if (seconds == null || seconds.isEmpty() || seconds.equals("null")) {
+            return "";
+        }
+        if (format == null || format.isEmpty()) {
+            format = "yyyy-MM-dd HH:mm:ss";
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        return sdf.format(new Date(Long.valueOf(seconds + "000")));
+    }
+
     public static String formatTime(long time) {
         time = time / 1000;
 

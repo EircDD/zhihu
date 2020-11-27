@@ -4,6 +4,7 @@ import com.panel.custom.EditText;
 import com.panel.custom.GridLayout;
 import com.panel.custom.TextView;
 import com.panel.custom.WindowAlert;
+import com.zhihu.utils.FileUtils;
 import com.zhihu.utils.ZhihuUtils;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -16,7 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 //  -场景       Scene
 //    -布局     stackPane
 //      -控件   Button
-public class ZhihuDownload extends Application {
+public class PanelDownload extends Application {
 
     private Stage stage;
 
@@ -28,11 +29,16 @@ public class ZhihuDownload extends Application {
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
 //        HBox hbox = new HBox();
-        TextView seltPath = new TextView("D:/知乎收藏/");
+//        String lastSavePath = ZhihuUtils.getPrivateInfo("lastSavePath", "D:/知乎收藏/");
+        String lastSavePath = "D:/知乎收藏/";
+        TextView seltPath = new TextView(lastSavePath);
         Button seltPathBtn = new Button("选择路径");
         seltPathBtn.setOnMouseClicked(event -> {
             //选择保存文件夹路径
-            seltPath.setText(new DirectoryChooser().showDialog(stage).getPath());
+            String path = new DirectoryChooser().showDialog(stage).getPath();
+            seltPath.setText(path);
+            ZhihuUtils.setPrivateInfo("lastSavePath", path);
+            FileUtils.writeFile(FileUtils.getDesktopPath() + "debug.log", "lastSavePath: " + path);
         });
         EditText articleEdt = new EditText("请输入文章链接");
         Button articleBtn = new Button("保存文章");
