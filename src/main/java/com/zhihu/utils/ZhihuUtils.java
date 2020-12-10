@@ -31,9 +31,9 @@ public class ZhihuUtils {
             System.out.println("链接不能为空");
             return;
         }
-        if (!articleUrl.startsWith("http") || !articleUrl.startsWith("wwww.")) {
+        if (!articleUrl.startsWith("http") || !articleUrl.startsWith("wwww.")|| !articleUrl.startsWith("https.")) {
             articleUrl = CommUtils.getUrl(articleUrl);
-            if (!articleUrl.startsWith("http") && !articleUrl.startsWith("wwww.")) {
+            if (!articleUrl.startsWith("http") && !articleUrl.startsWith("https") && !articleUrl.startsWith("wwww.")) {
                 throw new RuntimeException("文章链接错误,请检查链接是否正确: " + articleUrl);
             }
         }
@@ -144,7 +144,11 @@ public class ZhihuUtils {
             return defVal;
         }
         JSONObject jsonObject = JSONObject.parseObject(text);
-        return jsonObject.getString(key);
+        String val = jsonObject.getString(key);
+        if (StringUtil.isBlank(val)) {
+            return defVal;
+        }
+        return val;
     }
 
     /**

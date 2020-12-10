@@ -1041,6 +1041,33 @@ public class FileUtils {
     }
 
     /**
+     * java中如何获得操作系统下用户目录
+     * Key                     Meaning
+     * -------------------     ------------------------------
+     * "file.separator"        File separator (e.g., "/")
+     * "java.class.path"       Java classpath
+     * "java.class.version"    Java class version number
+     * "java.home"             Java installation directory
+     * "java.vendor"           Java vendor-specific string
+     *
+     * "java.vendor.url"       Java vendor URL
+     * "java.version"          Java version number
+     * "line.separator"        Line separator
+     * "os.arch"               Operating system architecture
+     * "os.name"               Operating system name
+     *
+     * "path.separator"        Path separator (e.g., ":")
+     * "user.dir"              User's current working directory
+     * "user.home"             User home directory
+     * "user.name"             User account name
+     * @param property 参数如上
+     * @return 路径或其他
+     */
+    public static String getSysPath(String property) {
+        return System.getProperty(property)+  File.separator;
+    }
+
+    /**
      * @param filePath 文件路径
      * @param pattern 日期格式
      * @return 创建日期
