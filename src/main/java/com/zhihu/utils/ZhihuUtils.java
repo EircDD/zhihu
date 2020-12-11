@@ -26,7 +26,7 @@ public class ZhihuUtils {
      * @param articleUrl 文章url
      */
     public static void saveArticle(String filePath, String articleUrl, SaveCallback saveCallback) {
-        if (StringUtil.isBlank(articleUrl)||StringUtils.contains(articleUrl,"zhihu")) {
+        if (StringUtil.isBlank(articleUrl)||!StringUtils.contains(articleUrl,"zhihu")) {
             saveCallback.callback("链接不能为空" + articleUrl, false);
             return;
         }
