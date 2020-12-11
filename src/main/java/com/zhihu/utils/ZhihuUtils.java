@@ -1,6 +1,5 @@
 package com.zhihu.utils;
 
-import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.other.Constant;
 import com.zhihu.other.BaseUrl;
@@ -27,14 +26,17 @@ public class ZhihuUtils {
      * @param articleUrl 文章url
      */
     public static void saveArticle(String filePath, String articleUrl, SaveCallback saveCallback) {
-        if (StringUtil.isBlank(articleUrl)) {
-            System.out.println("链接不能为空");
+        if (StringUtil.isBlank(articleUrl)||StringUtils.contains(articleUrl,"zhihu")) {
+            saveCallback.callback("链接不能为空" + articleUrl, false);
             return;
         }
-        if (!articleUrl.startsWith("http") || !articleUrl.startsWith("wwww.")|| !articleUrl.startsWith("https.")) {
+        if (!articleUrl.startsWith("http") || !articleUrl.startsWith("wwww.") || !articleUrl
+            .startsWith("https.")) {
             articleUrl = CommUtils.getUrl(articleUrl);
-            if (!articleUrl.startsWith("http") && !articleUrl.startsWith("https") && !articleUrl.startsWith("wwww.")) {
-                throw new RuntimeException("文章链接错误,请检查链接是否正确: " + articleUrl);
+            if (!articleUrl.startsWith("http") && !articleUrl.startsWith("https") && !articleUrl
+                .startsWith("wwww.")) {
+                saveCallback.callback("文章链接错误,请检查链接是否正确: " + articleUrl, false);
+                return;
             }
         }
         FileUtils.makeDirs(filePath);
@@ -61,6 +63,8 @@ public class ZhihuUtils {
 
         } catch (IOException e) {
             XLog.printExceptionInfo(e);
+            saveCallback.callback("保存失败:" + e.getMessage(), false);
+            return;
         }
         saveCallback.callback("保存" + (saveSuccess ? "成功" : "失败"), saveSuccess);
     }
@@ -71,9 +75,10 @@ public class ZhihuUtils {
      * 使用: saveCollect("D:\\2020-10-21\\文档", BaseUrl.getCollectionUrl("162366996"));
      *
      * @param filePath 保存路径
-     * @param collectionUrl 收藏url
+     * @param collectionUrl 收藏url   "https://www.zhihu.com/question/20784865/answer/1544077523"
      */
-    public static void saveCollect(String filePath, String collectionUrl) {
+    public static void saveCollect(String filePath, String collectionUrl,
+        SaveCallback saveCallback) {
         if (!collectionUrl.startsWith("https://www.") || !collectionUrl.startsWith("www.")) {
             collectionUrl = BaseUrl.getCollectionUrl(collectionUrl);
         }
@@ -94,6 +99,7 @@ public class ZhihuUtils {
             public void onError(Call call, Exception e, int i) {
                 XLog.printExceptionInfo(e);
                 call.cancel();
+                saveCallback.callback(e.getMessage() + "\n具体异常信息请查看桌面异常日志", false);
                 XLog.file("异常了" + e.getMessage());
             }
 
@@ -106,7 +112,8 @@ public class ZhihuUtils {
                     if (StringUtils.isBlank((ttitle = dataBean.getContent().gettitle()))) {
                         ttitle = dataBean.getContent().getQuestion().getTitle();
                         if (StringUtils.isBlank(ttitle)) {
-                            XLog.showLogArgs("标题为空:  " + dataBean.getContent().toString());
+                            saveCallback
+                                .callback("标题为空:  " + dataBean.getContent().toString(), false);
                             return;
                         }
                     }
@@ -122,59 +129,29 @@ public class ZhihuUtils {
 
                 if (collectionEnt.getPaging().isIs_end()) {
                     OkHttpUtils.getInstance().cancelTag(okhttpTag);
+                    saveCallback.callback("保存收藏完毕", true);
                     return;
                 }
                 //循环请求下一页
-                saveCollect(filePath, collectionEnt.getPaging().getNext());
+                saveCollect(filePath, collectionEnt.getPaging().getNext(), saveCallback);
             }
         });
     }
 
-
-    /**
-     * 保存私有信息
-     */
-    public static String getPrivateInfo(String key, String defVal) {
-        if (!FileUtils.isFileExist(Constant.CONFIG_FILE_PATH)) {
-            FileUtils.writeFile(Constant.CONFIG_FILE_PATH, "{}");
-            return defVal;
-        }
-        String text = FileUtils.readFile(Constant.CONFIG_FILE_PATH, "utf-8");
-        if (StringUtil.isBlank(text)) {
-            return defVal;
-        }
-        JSONObject jsonObject = JSONObject.parseObject(text);
-        String val = jsonObject.getString(key);
-        if (StringUtil.isBlank(val)) {
-            return defVal;
-        }
-        return val;
+    public static String[] getCategory() {
+        return CommUtils
+            .getPrivateInfo(Constant.CONFIG_KEY_CATEGORY, "文档;社会;历史人物传记;笑一笑;赚钱").split(";");
     }
 
-    /**
-     * 获取私有信息
-     */
-    public static void setPrivateInfo(String key, String value) {
-        try {
-            JSONObject privateInfo;
-            if (FileUtils.isFileExist(Constant.CONFIG_FILE_PATH)) {
-                privateInfo = JSONObject
-                    .parseObject(FileUtils.readFile(Constant.CONFIG_FILE_PATH, "utf-8"));
-            } else {
-                FileUtils.writeFile(Constant.CONFIG_FILE_PATH, "{}");
-                privateInfo = new JSONObject();
-            }
-            privateInfo.put(key, value);
-            FileUtils.writeFile(Constant.CONFIG_FILE_PATH, privateInfo.toJSONString());
-        } catch (Exception e) {
-            XLog.printExceptionInfo(e);
-            FileUtils.deleteFile(Constant.CONFIG_FILE_PATH);
+    public static void setCategory(String inputContent) {
+        if (!StringUtil.isBlank(inputContent)) {
+            CommUtils.setPrivateInfo(Constant.CONFIG_KEY_CATEGORY, inputContent);
         }
     }
 
     public interface SaveCallback {
 
-        void callback(String saveName, boolean saveSuccess);
+        void callback(String saveMsg, boolean saveSuccess);
     }
 
 }

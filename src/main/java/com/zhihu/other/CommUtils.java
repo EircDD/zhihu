@@ -1,5 +1,10 @@
 package com.zhihu.other;
 
+import com.alibaba.fastjson.JSONObject;
+import com.other.Constant;
+import com.zhihu.utils.FileUtils;
+import com.zhihu.utils.StringUtil;
+import com.zhihu.utils.XLog;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
@@ -70,6 +75,16 @@ public class CommUtils {
 
 
     /**
+     * 字符串是否包含uri连接
+     *
+     * @param urlData 包含网址url的文本
+     * @return 正则提取到的url
+     */
+    public static boolean isContainUrl(String urlData) {
+        return StringUtil.isEmpty(getUrl(urlData));
+    }
+
+    /**
      * @param urlData 包含网址url的文本
      * @return 正则提取到的url
      */
@@ -115,4 +130,48 @@ public class CommUtils {
         }
         return sb.toString();
     }
+
+
+
+    /**
+     * 保存私有信息
+     */
+    public static String getPrivateInfo(String key, String defVal) {
+        if (!FileUtils.isFileExist(com.other.Constant.CONFIG_FILE_PATH)) {
+            FileUtils.writeFile(com.other.Constant.CONFIG_FILE_PATH, "{}");
+            return defVal;
+        }
+        String text = FileUtils.readFile(com.other.Constant.CONFIG_FILE_PATH, "utf-8");
+        if (StringUtil.isBlank(text)) {
+            return defVal;
+        }
+        JSONObject jsonObject = JSONObject.parseObject(text);
+        String val = jsonObject.getString(key);
+        if (StringUtil.isBlank(val)) {
+            return defVal;
+        }
+        return val;
+    }
+
+    /**
+     * 获取私有信息
+     */
+    public static void setPrivateInfo(String key, String value) {
+        try {
+            JSONObject privateInfo;
+            if (FileUtils.isFileExist(com.other.Constant.CONFIG_FILE_PATH)) {
+                privateInfo = JSONObject
+                    .parseObject(FileUtils.readFile(com.other.Constant.CONFIG_FILE_PATH, "utf-8"));
+            } else {
+                FileUtils.writeFile(com.other.Constant.CONFIG_FILE_PATH, "{}");
+                privateInfo = new JSONObject();
+            }
+            privateInfo.put(key, value);
+            FileUtils.writeFile(com.other.Constant.CONFIG_FILE_PATH, privateInfo.toJSONString());
+        } catch (Exception e) {
+            XLog.printExceptionInfo(e);
+            FileUtils.deleteFile(Constant.CONFIG_FILE_PATH);
+        }
+    }
+
 }

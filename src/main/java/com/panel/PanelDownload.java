@@ -1,11 +1,14 @@
 package com.panel;
 
+import com.other.Constant;
 import com.panel.custom.EditText;
 import com.panel.custom.GridLayout;
 import com.panel.custom.TextView;
 import com.panel.custom.WindowAlert;
+import com.zhihu.other.CommUtils;
 import com.zhihu.utils.FileUtils;
 import com.zhihu.utils.ZhihuUtils;
+import com.zhihu.utils.ZhihuUtils.SaveCallback;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -29,17 +32,17 @@ public class PanelDownload extends Application {
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
 //        HBox hbox = new HBox();
-//        String lastSavePath = ZhihuUtils.getPrivateInfo("lastSavePath", "D:/知乎收藏/");
-        String lastSavePath = "D:/知乎收藏/";
+        String lastSavePath = CommUtils.getPrivateInfo("lastSavePath", Constant.DEF_SAVE_PATH);
         TextView seltPath = new TextView(lastSavePath);
         Button seltPathBtn = new Button("选择路径");
         seltPathBtn.setOnMouseClicked(event -> {
             //选择保存文件夹路径
             String path = new DirectoryChooser().showDialog(stage).getPath();
             seltPath.setText(path);
-            ZhihuUtils.setPrivateInfo("lastSavePath", path);
+            CommUtils.setPrivateInfo("lastSavePath", path);
             FileUtils.writeFile(FileUtils.getDesktopPath() + "debug.log", "lastSavePath: " + path);
         });
+
         EditText articleEdt = new EditText("请输入文章链接");
         Button articleBtn = new Button("保存文章");
         articleBtn.setOnMouseClicked(event -> {
@@ -64,7 +67,12 @@ public class PanelDownload extends Application {
                 return;
             }
             System.out.println("获取收藏id:" + collectionBtn.getText());
-            ZhihuUtils.saveCollect(seltPath.getText(), collectionEdt.getText());
+            ZhihuUtils.saveCollect(seltPath.getText(), collectionEdt.getText(), new SaveCallback() {
+                @Override
+                public void callback(String saveMsg, boolean saveSuccess) {
+                    WindowAlert.display("警告", saveMsg);
+                }
+            });
         });
         GridLayout gridLayout = new GridLayout(3, 2);
         gridLayout
