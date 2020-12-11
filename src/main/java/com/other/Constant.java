@@ -26,7 +26,7 @@ public class Constant {
     public static final String ENABLE_TXT_TFCOLLECTIONLINK = "暂时禁用收藏链接";
 
 
-    public static boolean TAG_ADD_CATEGORY = true;
+    public static boolean TAG_ADD_CATEGORY = false;
 
 
 }
