@@ -11,6 +11,10 @@ public class Constant {
     public static final String CONFIG_FILE_PATH =
         FileUtils.getSysPath("user.home") + "MyZhiHuConfig" + File.separator + "config.json";
 
+    public static final String CONFIG_KEY_SAVE_PATH = "defSavePath";
+    public static final String CONFIG_KEY_CATEGORY = "saveCategory";
+    public static final String CONFIG_VALUE_CATEGORY = "文档;社会;历史人物传记;笑一笑;赚钱";
+
     /**
      * 默认保存路径
      */
@@ -21,6 +25,8 @@ public class Constant {
      */
     public static final String ENABLE_TXT_TFCOLLECTIONLINK = "暂时禁用收藏链接";
 
-    public static final String CONFIG_KEY_SAVE_PATH = "defSavePath";
-    public static final String CONFIG_KEY_CATEGORY = "";
+
+    public static boolean TAG_ADD_CATEGORY = true;
+
+
 }

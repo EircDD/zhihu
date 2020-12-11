@@ -26,8 +26,8 @@ public class ZhihuUtils {
      * @param articleUrl 文章url
      */
     public static void saveArticle(String filePath, String articleUrl, SaveCallback saveCallback) {
-        if (StringUtil.isBlank(articleUrl)||!StringUtils.contains(articleUrl,"zhihu")) {
-            saveCallback.callback("链接不能为空" + articleUrl, false);
+        if (StringUtil.isBlank(articleUrl) || !StringUtils.contains(articleUrl, "zhihu")) {
+            saveCallback.callback("链接不能为空:\n" + articleUrl, false);
             return;
         }
         if (!articleUrl.startsWith("http") || !articleUrl.startsWith("wwww.") || !articleUrl
@@ -138,15 +138,30 @@ public class ZhihuUtils {
         });
     }
 
+    /**
+     * @return 获取分类数组
+     */
     public static String[] getCategory() {
         return CommUtils
-            .getPrivateInfo(Constant.CONFIG_KEY_CATEGORY, "文档;社会;历史人物传记;笑一笑;赚钱").split(";");
+            .getPrivateInfo(Constant.CONFIG_KEY_CATEGORY, Constant.CONFIG_VALUE_CATEGORY)
+            .split(";");
     }
 
+    /**
+     *  设置分类数组
+     */
     public static void setCategory(String inputContent) {
         if (!StringUtil.isBlank(inputContent)) {
             CommUtils.setPrivateInfo(Constant.CONFIG_KEY_CATEGORY, inputContent);
         }
+    }
+
+    /**
+     * @return 获取分类数组字符串
+     */
+    public static String getCategoryStr() {
+        return CommUtils
+            .getPrivateInfo(Constant.CONFIG_KEY_CATEGORY, Constant.CONFIG_VALUE_CATEGORY);
     }
 
     public interface SaveCallback {

@@ -67,13 +67,11 @@ public class SwingDemo implements ActionListener {
             @Override
             public void mouseClicked(MouseEvent e) {
                 String inputContent = JOptionPane.showInputDialog(
-                    frame,
-                    "输入保存分类,用英文\";\"分割",
-                    "文档;社会;历史人物传记;笑一笑;赚钱"
-                );
+                    frame, "输入保存分类,用英文\";\"分割", ZhihuUtils.getCategoryStr());
                 ZhihuUtils.setCategory(inputContent);
                 String[] categorys = ZhihuUtils.getCategory();
                 cbCategory.removeAllItems();
+                Constant.TAG_ADD_CATEGORY = true;
                 for (String category : categorys) {
                     cbCategory.addItem(category);
                 }
@@ -88,6 +86,21 @@ public class SwingDemo implements ActionListener {
         tfArticleLink.setBounds(fieldX, fieldY = fieldY + hSpace, fieldW, height);
         tfCollectionLink.setBounds(fieldX, fieldY = fieldY + hSpace, fieldW, height);
         button.setBounds((frameW - btnW) / 2, fieldY + hSpace, btnW, height);
+        cbCategory.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (Constant.TAG_ADD_CATEGORY) {
+                    Constant.TAG_ADD_CATEGORY = false;
+                    return;
+                }
+                if (tfCollectionLink.isEnabled() &&
+                    !tfCollectionLink.getText().equals(Constant.ENABLE_TXT_TFCOLLECTIONLINK)) {
+                    return;
+                }
+                cbCategory.setPopupVisible(false);
+                saveArticleToLocal();
+            }
+        });
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -99,17 +112,6 @@ public class SwingDemo implements ActionListener {
                     //下载文章
                     saveArticleToLocal();
                 }
-            }
-        });
-        cbCategory.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (tfCollectionLink.isEnabled() &&
-                    !tfCollectionLink.getText().equals(Constant.ENABLE_TXT_TFCOLLECTIONLINK)) {
-                    return;
-                }
-                cbCategory.setPopupVisible(false);
-                saveArticleToLocal();
             }
         });
         Container _ONE = new Container();
@@ -153,8 +155,11 @@ public class SwingDemo implements ActionListener {
      * 保存文章到本地文件
      */
     private void saveArticleToLocal() {
-        if (StringUtil.isBlank(tfSavePath.getText()) || cbCategory.getSelectedItem() == null) {
-            JOptionPane.showMessageDialog(frame, "保存路径为空", "提示", JOptionPane.WARNING_MESSAGE);
+        if (StringUtil.isBlank(tfSavePath.getText())) {
+            JOptionPane.showMessageDialog(frame, "保存路径不能为空", "提示", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (cbCategory.getSelectedItem() == null) {
             return;
         }
         String savePath = tfSavePath.getText() + cbCategory.getSelectedItem().toString();
