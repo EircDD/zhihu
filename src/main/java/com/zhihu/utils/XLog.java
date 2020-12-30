@@ -118,7 +118,7 @@ public class XLog {
         return sw.toString();
     }
 
-    public static void printExceptionInfo(Exception e) {
+    public static void printExceptionInfo(Throwable e) {
         System.out.println(getStackTraceString(e));
     }
 
@@ -136,5 +136,10 @@ public class XLog {
                 file(args[i], "普通信息.txt");
             }
         }
+    }
+
+    public static void showArgsInfo(String msg) {
+            String detilErrMsg = " " + msg + "\n详情:     " + new Throwable().getStackTrace()[1] + "";
+            System.out.println("报错信息:" + detilErrMsg);
     }
 }

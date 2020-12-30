@@ -26,4 +26,14 @@ public class BaseUrl {
     public static String getOneArticleUrl(String arg) {
         return "https://zhuanlan.zhihu.com/p/269558041";
     }
+
+    /**
+     * 专栏列表 https://www.zhihu.com/api/v4/columns/c_119120829/items 专栏文章
+     * https://zhuanlan.zhihu.com/p/336589475
+     *
+     * @return 专栏列表
+     */
+    public static String getZhuanLanUrl(String column) {
+        return "https://www.zhihu.com/api/v4/columns/" + column + "/items";
+    }
 }
