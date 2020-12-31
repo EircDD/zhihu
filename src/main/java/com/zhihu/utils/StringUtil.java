@@ -1,8 +1,12 @@
 package com.zhihu.utils;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import java.util.List;
+import java.util.Map;
+
 /**
- * Created by ray on 2018/1/19.
- * String 字符串相关类方法
+ * Created by ray on 2018/1/19. String 字符串相关类方法
  */
 
 public class StringUtil {
@@ -35,8 +39,7 @@ public class StringUtil {
     }
 
     /**
-     * 如果参数为null或者"null"字符串返回""空字符串
-     * 注:org.apache.commons.lang.StringUtils#clean效果类似不同点在于"null"字符串不会返回""空字符串
+     * 如果参数为null或者"null"字符串返回""空字符串 注:org.apache.commons.lang.StringUtils#clean效果类似不同点在于"null"字符串不会返回""空字符串
      *
      * @param str 要判断的字符串
      * @return 字符串
@@ -46,8 +49,7 @@ public class StringUtil {
     }
 
     /**
-     * 如果参数为null或者"null"字符串返回""空字符串
-     * 注:org.apache.commons.lang.StringUtils#clean效果类似不同点在于"null"字符串不会返回""空字符串
+     * 如果参数为null或者"null"字符串返回""空字符串 注:org.apache.commons.lang.StringUtils#clean效果类似不同点在于"null"字符串不会返回""空字符串
      *
      * @param str 要判断的字符串
      * @return 字符串
@@ -56,20 +58,25 @@ public class StringUtil {
         return isBlank(str) ? "" : str;
     }
 
-    /** 判断字符串是否有值，如果为null或者是空字符串或者只有空格，则返回true，否则则返回false */
+    /**
+     * 判断字符串是否有值，如果为null或者是空字符串或者只有空格，则返回true，否则则返回false
+     */
     public static boolean isEmpty(String value) {
         return value == null || "".equalsIgnoreCase(value.trim());
     }
 
-    /** 判断字符串是否有值，如果为null或者是空字符串或者只有空格或者为"null"字符串，则返回true，否则则返回false */
+    /**
+     * 判断字符串是否有值，如果为null或者是空字符串或者只有空格或者为"null"字符串，则返回true，否则则返回false
+     */
     public static boolean isBlank(String value) {
-        return value == null || "".equalsIgnoreCase(value.trim()) || "null".equalsIgnoreCase(value.trim());
+        return value == null || "".equalsIgnoreCase(value.trim()) || "null"
+            .equalsIgnoreCase(value.trim());
     }
 
     /**
      * 一次只能替换一个属性
      *
-     * @param resStr      要操作的网页style
+     * @param resStr 要操作的网页style
      * @param oldStylePrt 样式属性
      * @return 操作后的网页代码
      */
@@ -82,12 +89,38 @@ public class StringUtil {
     }
 
     /**
-     * @param str    源字符串("","null","  ",以上三种都为"")
+     * @param str 源字符串("","null","  ",以上三种都为"")
      * @param defVal 默认字符串
      * @return 字符串为空时的默认值
      */
     public static String defaultIfBlank(String str, String defVal) {
         return isBlank(str) ? defVal : str;
+    }
+
+    public static String[] getListValToArr(List<Map<String, String>> lists, String key) {
+        if (lists != null && lists.size() > 0) {
+            String[] array = new String[lists.size()];
+            for (int i = 0; i < lists.size(); i++) {
+                array[i] = lists.get(i).get(key);
+            }
+            return array;
+        }
+        return new String[0];
+    }
+
+    public static String[] getJsonArrValToArr(JSONArray lists, String key) {
+        if (lists == null) {
+            return new String[0];
+        }
+        String[] strArr = new String[lists.size()];
+        for (int i = 0; i < lists.size(); i++) {
+            if (lists.get(i) instanceof JSONObject) {
+                strArr[i] = lists.getJSONObject(i).getString(key);
+            } else {
+                strArr[i] = lists.getString(i);
+            }
+        }
+        return strArr;
     }
 
     /**
@@ -112,7 +145,7 @@ public class StringUtil {
     /**
      * 作用:       移除开头结尾,指定的字符串
      *
-     * @param str    要操作的字符串
+     * @param str 要操作的字符串
      * @param symbol 要去除的字符
      * @return 截取后的字符串
      */

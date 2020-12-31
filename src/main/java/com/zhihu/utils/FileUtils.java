@@ -255,6 +255,38 @@ public class FileUtils {
     }
 
     /**
+     * 递归删除空文件夹(推荐)
+     */
+    public static void deleteEmptyDir(String dirPath) {
+        File dir = new File(dirPath);
+        File[] dirs = dir.listFiles();
+        if (dirs != null) {
+            for (File file : dirs) {
+                if (file.isDirectory()) {
+                    deleteEmptyDir(file.getAbsolutePath());
+                }
+            }
+            boolean isDel = dir.isDirectory() && dir.delete();
+        }
+    }
+
+    /**
+     * 递归删除空文件夹(推荐)
+     */
+    private static void clear(File dir) {
+        File[] dirs = dir.listFiles();
+        if (dirs != null) {
+            for (File file : dirs) {
+                if (file.isDirectory()) {
+                    clear(file);
+                }
+            }
+            boolean isDel = dir.isDirectory() && dir.delete();
+        }
+    }
+
+
+    /**
      * Read file
      *
      * @param filePath 路径

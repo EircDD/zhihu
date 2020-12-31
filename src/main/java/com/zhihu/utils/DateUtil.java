@@ -1,5 +1,24 @@
 package com.zhihu.utils;
 
+/*G　　"公元"
+y　　四位数年份
+M　　月
+d　　日
+h　　时 在上午或下午 (1~12)
+H　　时 在一天中 (0~23)
+m　　分
+s　　秒
+S　　毫秒
+E 星期
+D 一年中的第几天
+F 一月中第几个星期几
+w 一年中第几个星期
+W 一月中第几个星期
+a 上午 / 下午 标记符
+k 时 在一天中 (1~24)
+K 时 在上午或下午 (0~11)
+z 时区*/
+
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -211,23 +230,11 @@ public class DateUtil {
     public static String getTimeStamp() {
         return getFormatter("yyyyMMddkkmmssSS").format(new Date(System.currentTimeMillis()));
     }
+
+    /**
+     * 获取指定日期或时间的字符串
+     */
+    public static String formatDate(String tagRegex, String dateStr) {
+        return getFormatter(tagRegex).format(dateStr);
+    }
 }
-//G　　"公元"
-//y　　四位数年份
-//M　　月
-//d　　日
-//h　　时 在上午或下午 (1~12)
-//H　　时 在一天中 (0~23)
-//m　　分
-//s　　秒
-//S　　毫秒
-//
-//
-//E　　一周中的周几
-//D　　一年中的第几天
-//w　　一年中第几个星期
-//a　　上午 / 下午 标记符
-//k 　　时(1~24)
-//K 　   时 在上午或下午 (0~11)
-//
-//
