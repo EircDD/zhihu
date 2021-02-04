@@ -170,3 +170,22 @@ public class ZhihuUtils {
     }
 
 }
+//    String path = "F:\\警界发生过哪些有趣的事？ .html";
+//    String articleUrl = "https://www.zhihu.com/question/298556504/answer/1630185808";
+//    String response = OkHttpUtils.get().url(articleUrl).build().execute().body().string();
+//    //        String content = FileUtils.readFile("F:\\警界发生过哪些有趣的事？ - 知乎20201222131438346.html", "utf-8");
+//    Document parse = Jsoup.parse(response);
+//        parse.getElementsByClass("ModalWrap").remove();
+//            parse.getElementsByClass("ModalLoading-content").remove();
+//            parse.getElementsByClass("css-tdnwmm").remove();
+//            parse.getElementsByClass("css-h5al4j").remove();
+//            Elements elementsByClass = parse.getElementsByClass("QuestionAnswer-content");
+////        Elements script = parse.getElementsByTag("script");
+////        parse.getElementsByClass("Card ViewAll").remove();
+////        System.out.println("parse.toString() = " + parse.toString());
+////class="QuestionAnswer-content"
+//            FileUtils.deleteFile(path);
+//            String content = elementsByClass.toString();
+////            +script.toString();
+//            FileUtils.writeFile(path, content);
+////        专栏不行

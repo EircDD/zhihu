@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -53,7 +54,7 @@ public class SwingDemo implements ActionListener {
                 int returnVal = fileChooser.showOpenDialog(fileChooser);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     String filePath = fileChooser.getSelectedFile()
-                        .getAbsolutePath();//这个就是你选择的文件夹的路径
+                        .getAbsolutePath() + File.separator;//这个就是你选择的文件夹的路径
                     System.out.println("filePath = " + filePath);
                     tfSavePath.setText(filePath);
                     CommUtils.setPrivateInfo(Constant.CONFIG_KEY_SAVE_PATH, filePath);
